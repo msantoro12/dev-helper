@@ -4,16 +4,16 @@ $(function(){
  var $tabs = $("#tabs").tabs({
   tabTemplate: "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>",
   add: function( event, ui ){
-      var tab_content = $tab_source_input.val() || "Tab " + tab_counter + " not found.",
-          $new_tab = $('<p><iframe id="tabFrame' + tab_counter + '" name="tabFrame' + tab_counter + '" src="' + tab_content + '" width="100%" height="95%"></iframe></p>');
-      $( ui.panel ).append($new_tab);
-      $('#tabFrame' + tab_counter)
-       .bind('load', function(){
-        var tab_title = ($('title', this).html() || tab_content.replace('http://', '')).substring(0, 14) + '...';
-        $('.ui-tabs-nav li:last-child a')
-         .html(tab_title)
-         .trigger('click');
-       });
+   var tab_content = $tab_source_input.val() || "Tab " + tab_counter + " not found.",
+       $new_tab = $('<p><iframe id="tabFrame' + tab_counter + '" name="tabFrame' + tab_counter + '" src="' + tab_content + '" width="100%" height="95%"></iframe></p>');
+   $( ui.panel ).append($new_tab);
+   $('#tabFrame' + tab_counter)
+    .bind('load', function(){
+     var tab_title = ($('title', this).html() || tab_content.replace('http://', '')).substring(0, 14) + '...';
+     $('.ui-tabs-nav li:last-child a')
+      .html(tab_title)
+      .trigger('click');
+      });
   }
  });
 

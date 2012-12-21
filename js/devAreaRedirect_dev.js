@@ -3,7 +3,13 @@ var $act = 'act',
  controllerName = "";
 ;(function($){
  var devMenu = '\
- <link rel="stylesheet" type="text/css" href="//devImages.marketamerica.com/stage/santoro/lib/styles/devHelper/main.css" />\
+ <link rel="stylesheet" type="text/css" href="//devImages.marketamerica.com/stage/santoro/lib/styles/devHelper/main.css?call=' + Math.floor(Math.random()*1100) + '" />\
+ <div id="emailGen">\
+  <ul>\
+   <li>Generate</li>\
+   <li>Close</li>\
+  </ul>\
+ </div>\
  <div id="dumpData">\
   <div id="dumpMenu">\
    <span><a href="">>@@<</a></span>\
@@ -18,7 +24,24 @@ var $act = 'act',
    </form>\
   </div>\
   <div id="data">\
-   <iframe id="scriptFrame" name="scriptFrame" src="" width="100%" height="95%"></iframe>\
+   <div id="dialog" title="Tab Source">\
+    <form>\
+     <fieldset class="ui-helper-reset">\
+      <label for="tab_source">source</label>\
+         <input type="text" name="tab_source" id="tab_source" value="http://" class="ui-widget-content ui-corner-all" />\
+     </fieldset>\
+    </form>\
+   </div>\
+   <div id="tabs">\
+    <ul>\
+     <li><button id="add_tab">Add Tab</button></li>\
+     <li class="ui-icon ui-icon-transfer-e-w"></li>\
+     <li><a href="#tabs-1">Code Review</a></li>\
+    </ul>\
+    <div id="tabs-1">\
+     <p><iframe id="scriptFrame" name="scriptFrame">Loading ...</iframe></p>\
+    </div>\
+   </div>\
   <div>\
  </div>',
   _ = {
@@ -26,13 +49,62 @@ var $act = 'act',
    init: function(){
     _.build.loadMenu();
     _.build.buildImageList();
+    _.build.loadTabs();
    },
 
+   loadTabs: function(){
+    var $tab_source_input = $("#tab_source"),
+        tab_counter = 3;
+    $tabs = $("#dumpData #tabs").tabs({
+     tabTemplate: "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>",
+     add: function(event, ui){
+      var tab_content = tabSource ||$tab_source_input.val() || "Tab " + tab_counter + " not found.",
+          $new_tab = $('<p><iframe id="tabFrame' + tab_counter + '" name="tabFrame' + tab_counter + '" src="' + tab_content + '"></iframe></p>');
+      $(ui.panel).append($new_tab);
+      $('#tabFrame' + tab_counter)
+       .bind('load', function(){
+        var $obj = $(this),
+            tab_title = ($(document, $obj).find("title").html() || tab_content.replace(/http:\/\/|https:\/\//g, ''));
+        $obj
+         .height('100%')
+         .width('100%');
+        $('.ui-tabs-nav li:last-child a')
+         .html(tab_title.substring(0, 14) + '...')
+         .attr("title", tab_title)
+         .trigger('click');
+         console.log($obj, $(document, $obj).find("title").html());
+       });
+       tab_counter++;
+     }
+    });
+    $dialog = $("#dumpData #dialog").dialog({
+     autoOpen: false,
+     modal: true,
+     resizable: false,
+     buttons: {
+      Add: function(){
+       $tabs.tabs("add", "#tabs-" + tab_counter, "");
+       $(this).dialog("close");
+      },
+      Cancel: function(){
+       $(this).dialog("close");
+      }
+     },
+     open: function(){
+      $tab_source_input.focus();
+     },
+     close: function(){
+         $tab_source_input.val('http://');
+     }
+    });
+    var $form = $("form", $dialog).submit(function(){
+     $tabs.tabs("add", "#tabs-" + tab_counter, "");
+     $dialog.dialog("close");
+     return false;
+    });
+   },
    loadMenu: function(){
-    $('body').append(devMenu);
-    if(depScript && depScriptLoaded){
-     _.general.loadScript(depScript);
-    }
+    $body.append(devMenu);
     console.log(sysInfo);
     if(sysInfo == 'true'){
      $('#remSys').attr('checked', 'checked');
@@ -52,11 +124,10 @@ var $act = 'act',
        .removeClass('moving')
        .removeClass("smallSlide");
      }
-    );
-    $('#dumpData #data')
+    ).find('#data, iframe')
      .show()
-     .height($height)
-     .width($width);
+     .height('100%')
+     .width('100%');
    },
    buildImageList: function(){
     $('#imgList').empty();
@@ -91,6 +162,12 @@ var $act = 'act',
   },
   listeners:{
    init: function(){
+    _.listeners.focusTab();
+    _.listeners.menuClear();
+    _.listeners.emailGen();
+    _.listeners.addTab();
+    _.listeners.removeTab();
+    _.listeners.hoverTabNav();
     _.listeners.systemInfo();
     _.listeners.windowResize();
     _.listeners.controllerChange();
@@ -108,14 +185,88 @@ var $act = 'act',
     _.listeners.headerSlide();
    },
 
+   menuClear: function(){
+    $(document).bind("click", function(event){
+     $("#emailGen").hide();
+    });
+   },
+   emailGen: function(){
+    $body.delegate("input[name='usrID']", "contextmenu", function(event){
+     var $obj = $(this);
+     $("#emailGen")
+     .css({
+      top: event.pageY + 'px',
+      left: event.pageX + 'px'
+     })
+     .show()
+     .find("ul li:first")
+      .bind("click", function(){
+       $obj.val(controllerName + Math.floor(Math.random()*110000) + "@marketamerica.com");
+       $(this).siblings().unbind();
+       $("#emailGen").hide();
+      })
+     .end()
+     .find("ul li:last")
+      .bind("click", function(){
+       $obj.focus();
+       $(this).siblings().unbind();
+       $("#emailGen").hide();
+      });
+     return false;
+    });
+   },
+   focusTab: function(){
+    $("ul.ui-tabs-nav li", "#tabs").delegate("button", "focus", function(event){
+      event.preventDefault();
+      $(event.target)
+       .trigger("mouseover")
+       .trigger("blur")
+       .delay(3000)
+       .queue(function(next){
+        $(this).trigger("mouseout")
+       });
+     });
+   },
+   addTab: function(){
+    $("#add_tab", "#dumpData")
+     .button()
+     .click(function(){
+      $dialog.dialog("open");
+     });
+   },
+   removeTab: function(){
+    $("#tabs span.ui-icon-close", "#dumpData").live("click", function(){
+     var $obj = $(this),
+         tabIndex = $("li", $tabs).index($obj.parent());
+     $tabs.tabs("remove", tabIndex);
+      $($obj.prev('a').attr('href'), $tabs).add($obj.parent()).remove();
+      $('.ui-tabs-nav li:nth-child(3) a', $tabs)
+          .trigger('click');
+    });
+   },
+   hoverTabNav: function(){
+    $(".ui-tabs-nav", $tabs).hover(function(){
+     $(this)
+      .delay(250)
+      .animate({
+       right: "0px"
+      },500);
+    }, function(){
+     $(this)
+      .stop(true)
+      .animate({
+       right: -($(this).width() -16) +"px"
+      }, 500);
+    });
+   },
    systemInfo: function(){
     $('#remSys').change(function(){
       _.general.setCookie("sysInfo", $(this).is(":checked"));
       if($(this).is(":checked")){
-       $('body table:last').slideUp();
+       $body.find('table:last').slideUp();
       }
       else{
-       $('body table:last').slideDown();
+       $body.find('table:last').slideDown();
       }
     });
    },
@@ -134,6 +285,7 @@ var $act = 'act',
     .val(controllerName)
     .bind("change", function(){
      _.general.setCookie("controllerName", $(this).val());
+     controllerName = $(this).val();
     });
    },
    scriptChange: function(){
@@ -173,12 +325,12 @@ var $act = 'act',
        .bind('mousemove',function(e){
         var listHeight = $obj.outerHeight(true),
            offset = $obj.position(),
-           divY = (e.pageY - $('body').scrollTop()),
+           divY = (e.pageY - $body.scrollTop()),
            topMargin = eval(($height / 2) + (winPad * 2) + hdrHeight),
            bottomMargin = eval(($height / 2) - (winPad * 2) + hdrHeight),
            downSpeed = ((Math.abs(listHeight + offset.top + $height) * 1.5) - (Math.abs(divY - bottomMargin) * 6)),
            upSpeed = (((listHeight - hdrHeight -$height - offset.top) * 1.5) - (Math.abs(divY - topMargin) * 6));
-        //$("#log").text("---------------Y: " + e.pageY + " / " + divY + ", top: " + offset.top + " calc:" + eval(Math.abs(offset.top - hdrHeight)) + " | " + eval(listHeight - $height) + "  Margins: " + topMargin + " / " + bottomMargin + "  Speed: " + downSpeed + " / " + upSpeed + "  scrollTop: " + $('body').scrollTop());
+        //$("#log").text("---------------Y: " + e.pageY + " / " + divY + ", top: " + offset.top + " calc:" + eval(Math.abs(offset.top - hdrHeight)) + " | " + eval(listHeight - $height) + "  Margins: " + topMargin + " / " + bottomMargin + "  Speed: " + downSpeed + " / " + upSpeed + "  scrollTop: " + $body.scrollTop());
         if(divY > topMargin && Math.abs(offset.top - hdrHeight) < (listHeight - $height)){
          $obj.addClass('moving').animate({top: "-" + eval(listHeight - $height) + "px"}, downSpeed, function(){
           $obj.stop(true);
@@ -298,9 +450,10 @@ var $act = 'act',
     });
    },
    toggleWindow: function(){
-    $("#dumpData a").toggle(function(event){
+    $("#dumpData a:first").toggle(function(event){
      event.preventDefault();
-     depScriptLoaded = !depScriptLoaded ? $('#scriptFrame').attr('src', depScriptUrl): true;
+     depScriptLoaded = !depScriptLoaded ? (depScript ? _.general.loadScript(depScript): $('#scriptFrame').attr('src', depScriptUrl)): true;
+
      _.build.resizeDataWin();
     },function(event){
      event.preventDefault();
@@ -362,8 +515,8 @@ var $act = 'act',
    redirectEnable: function(){
     $('#remRed').change(function(){
      if(!$(this).attr("checked")){
-      setAct('controllerName + "." + act', 'act.replace(/action=/, "action=" + controllerName + ".")', controllerName);
-      $('form').each(function(){
+      setAct('act.indexOf(controllerName) != -1 ? act : controllerName + "." + act', 'act.indexOf(controllerName) != -1 ? act : act.replace(/action=/, "action=" + controllerName + ".")', controllerName);
+      $('form[action]').not("[action*=" + controllerName + "]").each(function(){
        var $obj = $(this);
        $obj.attr('action', $obj.attr('action').replace("action=", "action=" + controllerName + "."));
       });
@@ -373,7 +526,7 @@ var $act = 'act',
       });
      }
      else{
-      $('form').each(function(){
+      $('form[action]').each(function(){
        var $obj = $(this);
        $obj.attr('action', $obj.attr('action').replace("action=" + controllerName + ".", "action="));
       });
@@ -385,7 +538,7 @@ var $act = 'act',
     });
    },
    linkRedirect: function(){
-    $('body').delegate('a', 'click', function(event){
+    $body.delegate('a', 'click', function(event){
      var $obj = $(this);
      if($obj.attr('href') != null && $obj.attr('href') != 'javascript:void(0);' && $obj.attr('href') != '#' && !$('#remRed').attr("checked")){
       $obj
@@ -416,11 +569,13 @@ var $act = 'act',
    loadScript: function(scriptNum){
     $('#dsID').val(scriptNum);
     $('#scriptForm').submit();
+    return true;
    }
   }
  },
  settings,
  winPad = 40,
+ $body = $("body"),
  $height = $(window).height() - (winPad * 2),
  $width = $(window).width() - (winPad * 2),
  patt1 = window.location.search ? window.location.search.match(/action=([A-Za-z]+)\./)[1] : "",
@@ -428,7 +583,11 @@ var $act = 'act',
  depScriptUrl = "http://codereview.maeagle.corp/index.cfm",
  depScript = _.general.getCookie("depScript") || "",
  sysInfo = _.general.getCookie("sysInfo") || false,
- depScriptLoaded = false;
+ depScriptLoaded = false,
+ $tabs,
+ $dialog,
+ tabSource,
+ tabsRecord = _.general.getCookie("tabsRecord") || "";
  $.devHelper = {
   defaults: {
   },

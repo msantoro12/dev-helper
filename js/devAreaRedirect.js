@@ -3,109 +3,39 @@ var $act = 'act',
  controllerName = "";
 ;(function($){
  var devMenu = '\
-<style type="text/css">\
- table.cfdump_wddx,table.cfdump_xml,table.cfdump_struct,table.cfdump_array,table.cfdump_query,table.cfdump_cfc,table.cfdump_object,table.cfdump_binary,table.cfdump_udf,table.cfdump_udfbody,table.cfdump_udfarguments{ font-size: xx-small; font-family: verdana, arial, helvetica, sans-serif; margin: 2px;}table.cfdump_wddx th,table.cfdump_xml th,table.cfdump_struct th,table.cfdump_array th,table.cfdump_query th,table.cfdump_cfc th,table.cfdump_object th,table.cfdump_binary th,table.cfdump_udf th,table.cfdump_udfbody th,table.cfdump_udfarguments th{ text-align: left; color: white; padding: 5px; border: 1px solid #000000;}table.cfdump_wddx td,table.cfdump_xml td,table.cfdump_struct td,table.cfdump_array td,table.cfdump_query td,table.cfdump_cfc td,table.cfdump_object td,table.cfdump_binary td,table.cfdump_udf td,table.cfdump_udfbody td,table.cfdump_udfarguments td{ padding: 3px; background-color: #ffffff; vertical-align : top; border: 1px solid #000000;}table.cfdump_wddx{ background-color: #000000;}table.cfdump_wddx th.wddx{ background-color: #444444;}table.cfdump_xml{ background-color: #888888;}table.cfdump_xml th.xml{ background-color: #aaaaaa;}table.cfdump_xml td.xml{ background-color: #dddddd;}table.cfdump_struct{ background-color: #CCE9E5;}table.cfdump_struct th.struct{ background-color: #4444cc;}table.cfdump_struct td.struct{ background-color: #ccddff;}table.cfdump_array{ background-color: #006600;}table.cfdump_array th.array{ background-color: #009900;}table.cfdump_array td.array{ background-color: #ccffcc;}table.cfdump_query{ background-color: #884488;}table.cfdump_query th.query{ background-color: #aa66aa;}table.cfdump_query td.query{ background-color: #ffddff;}table.cfdump_cfc{ background-color: #ff0000;}table.cfdump_cfc th.cfc{ background-color: #ff4444;}table.cfdump_cfc td.cfc{ background-color: #ffcccc;}table.cfdump_object{ background-color : #ff0000;}table.cfdump_object th.object{ background-color: #ff4444;}table.cfdump_binary{ background-color : #eebb00;}table.cfdump_binary th.binary{ background-color: #ffcc44;}table.cfdump_binary td{ font-size: x-small;}table.cfdump_udf{ background-color: #aa4400;}table.cfdump_udf th.udf{ background-color: #cc6600;}table.cfdump_udfarguments{ background-color: #dddddd; margin: 3px;}table.cfdump_udfarguments th{ background-color:#eeeeee; color: #000000;}\
-.toolset.ac_results{\
- background-color: #FFF;\
- border-color: #036;\
- border-width: 0 1px 4px 1px;\
- border-style: solid;\
- z-index: 3;\
-}\
-.toolset.ac_results ul{\
- list-style: none outside none;\
- margin: 4px 2px;\
- padding: 0;\
-}\
-.toolset.ac_results ul li{\
- cursor: pointer;\
-}\
-.toolset.ac_results ul li.ac_odd{\
- background-color: #FFC;\
-}\
-.toolset.ac_results ul li.ac_over{\
- background-color: #FF6;\
- padding-left: 5px;\
-}\
-#dumpData{\
- position: fixed;\
- top: 0;\
- left: 0;\
- border: 1px solid #000;\
- background: transparent;\
- z-index: 9995;\
- height: 15px;\
- width: 30px;\
- overflow: hidden;\
- opacity: 0;\
- display: block;\
- color: #000;\
- margin: 0px;\
- padding: 0px;\
-}\
-#dumpData #data{\
- position: relative;\
- display: none;\
- overflow: auto;\
- background: transparent;\
-}\
-#dumpData #dumpMenu{\
- background: #fff;\
- height: 30px;\
-}\
-#dumpMenu form{\
- margin: 0;\
-}\
-#dumpData #dumpMenu span{\
- float: left;\
- z-index: 9999;\
- background: #fff;\
-}\
-#dumpData #dumpMenu a{\
- color: blue;\
-}\
-#dumpData .superDropDown ul{\
- z-index: 9996;\
- position: absolute;\
- display: none;\
- list-style: none;\
-}\
-#dumpData .superDropDown li{\
- position: relative;\
- display: block;\
- border: 1px solid #000;\
- background: #fff;\
- z-index: 9996;\
-}\
-#dumpData .superDropDown.expandable ul li div{\
- z-index: 9998;\
- position: absolute;\
- display: none;\
- border: 1px solid #000;\
- background: #fff;\
- left: 100px;\
- padding: 5px;\
- white-space: nowrap;\
-}\
-#dumpData .superDropDown ul li img{\
- max-height: 100px;\
- max-width: 100px;\
-}\
-</style>\
+ <link rel="stylesheet" type="text/css" href="//devImages.marketamerica.com/stage/santoro/lib/styles/devHelper/main.css" />\
  <div id="dumpData">\
   <div id="dumpMenu">\
-   <span><a href="">>@@<</a> <---- click to shrink</span>\
-   <span>&nbsp;| <label for="controllerName">Controller</label><input type="text" value="" name="controllerName" id="controllerName" size="12" /></span>\
-   <span>&nbsp;| <label for="depScript">Deployment Script</label><input type="text" value="" name="depScript" id="depScript" size="6" /></span>\
+   <span><a href="">>@@<</a></span>\
    <span>&nbsp;| <label for="remRed">Disable redirect </label><input type="checkbox" value="1" name="remRed" id="remRed" /></span>\
+   <span>&nbsp;| <label for="controllerName">Controller</label><input type="text" value="" name="controllerName" id="controllerName" size="12" /></span>\
+   <span>&nbsp;| <label for="remSys">Disable System Info </label><input type="checkbox" value="1" name="remSys" id="remSys" /></span>\
+   <span>&nbsp;| <label for="depScript">Deployment Script</label><input type="text" value="" name="depScript" id="depScript" size="6" /></span>\
    <span id="images" class="superDropDown expandable">&nbsp;| <span style="float:none;">Images</span><ul id="imgList"></ul></span>\
    <span id="log"></span>\
-   <form id="scriptForm"  name="default" action="http://codereview.maeagle.corp/index.cfm?action=scripts.editDS" method="post" target="scriptFrame">\
+   <form id="scriptForm" name="default" action="http://codereview.maeagle.corp/index.cfm?action=scripts.editDS" method="post" target="scriptFrame">\
     <input type="hidden" name="dsID" id="dsID" value="">\
    </form>\
   </div>\
   <div id="data">\
-   <iframe id="scriptFrame" name="scriptFrame" src="http://codereview.maeagle.corp/index.cfm" width="100%" height="95%"></iframe>\
+   <div id="dialog" title="Tab Source">\
+    <form>\
+     <fieldset class="ui-helper-reset">\
+      <label for="tab_source">source</label>\
+         <input type="text" name="tab_source" id="tab_source" value="http://" class="ui-widget-content ui-corner-all" />\
+     </fieldset>\
+    </form>\
+   </div>\
+   <div id="tabs">\
+    <ul>\
+     <li><button id="add_tab">Add Tab</button></li>\
+     <li class="ui-icon ui-icon-transfer-e-w"></li>\
+     <li><a href="#tabs-1">Code Review</a></li>\
+    </ul>\
+    <div id="tabs-1">\
+     <p><iframe id="scriptFrame" name="scriptFrame" src="http://codereview.maeagle.corp/index.cfm"></iframe></p>\
+    </div>\
+   </div>\
   <div>\
  </div>',
   _ = {
@@ -113,11 +43,70 @@ var $act = 'act',
    init: function(){
     _.build.loadMenu();
     _.build.buildImageList();
+    _.build.loadTabs();
+   },
+
+   loadTabs: function(){
+    var $tab_source_input = $("#tab_source"),
+        tab_counter = 3;
+    $tabs = $("#dumpData #tabs").tabs({
+     tabTemplate: "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>",
+     add: function(event, ui){
+      var tab_content = tabSource ||$tab_source_input.val() || "Tab " + tab_counter + " not found.",
+          $new_tab = $('<p><iframe id="tabFrame' + tab_counter + '" name="tabFrame' + tab_counter + '" src="' + tab_content + '"></iframe></p>');
+      $(ui.panel).append($new_tab);
+      $('#tabFrame' + tab_counter)
+       .bind('load', function(){
+        var $obj = $(this),
+            tab_title = ($(document, $obj).find("title").html() || tab_content.replace(/http:\/\/|https:\/\//g, ''));
+        $obj
+         .height('100%')
+         .width('100%');
+        $('.ui-tabs-nav li:last-child a')
+         .html(tab_title.substring(0, 14) + '...')
+         .attr("title", tab_title)
+         .trigger('click');
+         console.log($obj, $(document, $obj).find("title").html());
+
+       });
+       tab_counter++;
+     }
+    });
+
+    $dialog = $("#dumpData #dialog").dialog({
+     autoOpen: false,
+     modal: true,
+     resizable: false,
+     buttons: {
+      Add: function(){
+       $tabs.tabs("add", "#tabs-" + tab_counter, "");
+       $(this).dialog("close");
+      },
+      Cancel: function(){
+       $(this).dialog("close");
+      }
+     },
+     open: function(){
+      $tab_source_input.focus();
+     },
+     close: function(){
+         $tab_source_input.val('http://');
+     }
+    });
+    var $form = $("form", $dialog).submit(function(){
+     $tabs.tabs("add", "#tabs-" + tab_counter, "");
+     $dialog.dialog("close");
+     return false;
+    });
    },
    loadMenu: function(){
     $('body').append(devMenu);
-    if(depScript){
+    if(depScript && depScriptLoaded){
      _.general.loadScript(depScript);
+    }
+    console.log(sysInfo);
+    if(sysInfo == 'true'){
+     $('#remSys').attr('checked', 'checked');
     }
    },
    resizeDataWin: function(){
@@ -130,13 +119,14 @@ var $act = 'act',
       left: winPad + "px"
     }, 500,
      function(){
-      $(this).removeClass('moving');
+      $(this)
+       .removeClass('moving')
+       .removeClass("smallSlide");
      }
-    );
-    $('#dumpData #data')
+    ).find('#data, iframe')
      .show()
-     .height($height)
-     .width($width);
+     .height('100%')
+     .width('100%');
    },
    buildImageList: function(){
     $('#imgList').empty();
@@ -169,8 +159,12 @@ var $act = 'act',
     });
    }
   },
-  listeners: {
+  listeners:{
    init: function(){
+    _.listeners.addTab()
+    _.listeners.removeTab()
+    _.listeners.hoverTabNav()
+    _.listeners.systemInfo();
     _.listeners.windowResize();
     _.listeners.controllerChange();
     _.listeners.scriptChange();
@@ -186,12 +180,56 @@ var $act = 'act',
     _.listeners.linkRedirect();
     _.listeners.headerSlide();
    },
+
+   addTab: function(){
+    $("#add_tab", "#dumpData")
+     .button()
+     .click(function(){
+      $dialog.dialog("open");
+     });
+   },
+   removeTab: function(){
+    $("#tabs span.ui-icon-close", "#dumpData").live("click", function(){
+     var $obj = $(this),
+         tabIndex = $("li", $tabs).index($obj.parent());
+     $tabs.tabs("remove", tabIndex);
+      $($obj.prev('a').attr('href'), $tabs).add($obj.parent()).remove();
+      $('.ui-tabs-nav li:nth-child(3) a', $tabs)
+          .trigger('click');
+    });
+   },
+   hoverTabNav: function(){
+    $(".ui-tabs-nav", $tabs).hover(function(){
+     $(this)
+      .delay(250)
+      .animate({
+       right: "0px"
+      },500);
+    }, function(){
+     $(this)
+      .stop(true)
+      .animate({
+       right: -($(this).width() -16) +"px"
+      }, 500);
+    });
+   },
+   systemInfo: function(){
+    $('#remSys').change(function(){
+      _.general.setCookie("sysInfo", $(this).is(":checked"));
+      if($(this).is(":checked")){
+       $('body table:last').slideUp();
+      }
+      else{
+       $('body table:last').slideDown();
+      }
+    });
+   },
    windowResize: function(){
     $(window).resize(function(){
      winPad = 40;
      $height = $(window).height() - (winPad * 2);
      $width = $(window).width() - (winPad * 2);
-     if($("#dumpData").width() > 30){
+     if($("#dumpData").width() > 32){
       _.build.resizeDataWin();
      }
     });
@@ -201,6 +239,7 @@ var $act = 'act',
     .val(controllerName)
     .bind("change", function(){
      _.general.setCookie("controllerName", $(this).val());
+     controllerName = $(this).val();
     });
    },
    scriptChange: function(){
@@ -349,43 +388,54 @@ var $act = 'act',
    },
    imageLocationChange: function(){
     $('#dumpMenu .superDropDown.expandable ul li').delegate('div input[name="locImg"]', "click", function(event){
-     var $obj = $(this)
-      , $curImg = $('#imgList li:nth-child(' + $obj.data('index') + ') img').add('img:eq(' + ($obj.data('index') - 1) + ')')
-      , curSRC = $curImg.attr('src')
-      , repSRC = 'devImages.marketamerica.com'
-      , newSRC = curSRC.replace(repSRC ,'devImages.marketamerica.com/stage/' + controllerName);
+     var $obj = $(this),
+         $curImg = $('#imgList li:nth-child(' + $obj.data('index') + ') img').add('img:eq(' + ($obj.data('index') - 1) + ')'),
+         curSRC = $curImg.attr('src'),
+         repSRC = 'devImages.marketamerica.com',
+         newSRC = curSRC.replace(repSRC ,'devImages.marketamerica.com/stage/' + controllerName);
       //console.log($curImg, curSRC, newSRC);
      if($obj.is(":checked")){
       $obj.data('prevVal', $curImg.attr('src'));
       $curImg.attr('src', newSRC);
-      //$('img').get($obj.val()).src = newSRC;
-      //console.log($(this).val() + ' | ' + newSRC + ' | ' + $curImg.data('prevVal') + ' | ' + $('img').get($(this).val()).src);
      }
       else{
       $curImg.attr('src', $obj.data('prevVal'));
-      //$('img').get($obj.val()).src = $obj.data('prevVal');
-      //console.log($obj.val() + ' | ' + $obj.data('prevVal'))
      }
     });
    },
    toggleWindow: function(){
-    $("#dumpData a").toggle(function(event){
+    $("#dumpData a:first").toggle(function(event){
      event.preventDefault();
+     depScriptLoaded = !depScriptLoaded ? $('#scriptFrame').attr('src', depScriptUrl): true;
      _.build.resizeDataWin();
     },function(event){
      event.preventDefault();
      $("#dumpData").addClass('moving');
      $("#dumpData").stop(true, true).animate({
-       height: "15px",
+       height: "20px",
        width: "30px",
        top: "0px",
        left: "0px"
      }, 1000,
       function(){
-       $(this).removeClass('moving');
+       $(this)
+        .removeClass('moving')
+        .removeClass("smallSlide");
       }
      );
      $('#dumpData #data').fadeOut(1000);
+    })
+    .hover(function(){
+      $("#dumpData:not(moving)")
+      .not(function(){
+       return $(this).width() > 32;
+      })
+      .delay(250)
+      .addClass("smallSlide")
+      .animate({
+        width: "480px",
+        height: "30px"
+      });
     });
    },
    hideWindow: function(){
@@ -398,6 +448,17 @@ var $act = 'act',
     },
     function(){
      $(this)
+      .filter(".smallSlide")
+      .not(".moving")
+      .animate({
+         width: "30px",
+         height: "20px"
+       }, 500
+       ,function(){
+        $(this).removeClass("smallSlide");
+       })
+      .end()
+      .end()
       .delay(1000)
       .animate({
        opacity: "0"
@@ -407,18 +468,24 @@ var $act = 'act',
    redirectEnable: function(){
     $('#remRed').change(function(){
      if(!$(this).attr("checked")){
-      setAct('controllerName + "." + act', 'act.replace(/action=/, "action=" + controllerName + ".")', controllerName);
-      $('form').each(function(){
+      setAct('act.indexOf(controllerName) != -1 ? act : controllerName + "." + act', 'act.indexOf(controllerName) != -1 ? act : act.replace(/action=/, "action=" + controllerName + ".")', controllerName);
+      $('form[action]').not("[action*=" + controllerName + "]").each(function(){
        var $obj = $(this);
-       $obj.data('prevVal', $obj.attr('action'));
-       $obj.attr('action', $obj.attr('action').replace(/action=/, "action=" + controllerName + "."));
+       $obj.attr('action', $obj.attr('action').replace("action=", "action=" + controllerName + "."));
+      });
+      $("script:contains('m?action=')").each(function(){
+       var $obj = $(this);
+       $obj.text($obj.text().replace(/action=/g, "action=" + controllerName + "."));
       });
      }
      else{
-      $('form').each(function(){
-       if($(this).data('prevVal')){
-        $(this).attr('action', $(this).data('prevVal'));
-       }
+      $('form[action]').each(function(){
+       var $obj = $(this);
+       $obj.attr('action', $obj.attr('action').replace("action=" + controllerName + ".", "action="));
+      });
+      $("script:contains('m?action=')").each(function(){
+       var $obj = $(this);
+       $obj.text($obj.text().replace(new RegExp("action=" + controllerName + ".", "g"), "action="));
       });
      }
     });
@@ -429,20 +496,20 @@ var $act = 'act',
      if($obj.attr('href') != null && $obj.attr('href') != 'javascript:void(0);' && $obj.attr('href') != '#' && !$('#remRed').attr("checked")){
       $obj
        .attr('href', $obj
-                      .attr('href')
-                      .replace(/action=/, "action=" + controllerName + "."));
+        .attr('href')
+        .replace(/action=/, "action=" + controllerName + "."));
      }
     });
    },
    headerSlide: function(){
     $('#dumpData').delegate("#dumpMenu", "mouseenter", function(event){
-     //console.log($('#dumpData').width(), $('#dumpMenu span:last'),$('#dumpMenu span:last').position(),  $('#dumpMenu span:last').offset(),event);
     });
    }
   },
   general:{
    init: function(){
    },
+
    setCookie: function(key, value){
     var expires = new Date();
     expires.setTime(expires.getTime() + 31536000000); //1 year
@@ -464,7 +531,14 @@ var $act = 'act',
  $width = $(window).width() - (winPad * 2),
  patt1 = window.location.search ? window.location.search.match(/action=([A-Za-z]+)\./)[1] : "",
  controllerName = _.general.getCookie("controllerName") || "",
- depScript = _.general.getCookie("depScript") || "";
+ depScriptUrl = "http://codereview.maeagle.corp/index.cfm",
+ depScript = _.general.getCookie("depScript") || "",
+ sysInfo = _.general.getCookie("sysInfo") || false,
+ depScriptLoaded = false,
+ $tabs,
+ $dialog,
+ tabSource,
+ tabsRecord = _.general.getCookie("tabsRecord") || "";
  $.devHelper = {
   defaults: {
   },
@@ -477,6 +551,7 @@ var $act = 'act',
     $('#remRed').attr("checked", "checked").trigger('change');
    }
    $('#remRed').trigger('change');
+   $('#remSys').trigger('change');
   }
  };
 })(jQuery);
